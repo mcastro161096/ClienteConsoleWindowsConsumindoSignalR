@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Speech.Synthesis;
-using System.Speech.Recognition;
+//using System.Speech.Recognition;
 using System.Globalization;
 using static System.Console;
+using Microsoft.Speech.Recognition;
 
 namespace AssistentePessoalComReconhecimentoDeVoz
 {
@@ -41,18 +42,49 @@ namespace AssistentePessoalComReconhecimentoDeVoz
             gramaticaComandos.Name = "sistema";
 
 
-            Write("<============");
+            Write("<===============================");
             _motorDeReconhecimentoDeFala.LoadGrammar(gramaticaConversas);
             _motorDeReconhecimentoDeFala.LoadGrammar(gramaticaComandos);
-            Write("============>");
+            Write("===============================>");
             _motorDeReconhecimentoDeFala.SpeechRecognized  += Rec;
+            
 
             _sintetizadorDeFala.SelectVoiceByHints(VoiceGender.Female);
+            Speak("Estou ouvindo");
+            _motorDeReconhecimentoDeFala.RecognizeAsync(RecognizeMode.Multiple);
             ReadKey();
 
             
         }
 
+        private static void Rec(object s, SpeechRecognizedEventArgs e)
+        {
+            if (e.Result.Confidence >= 0.4f)
+            {
+                var speech = e.Result.Text;
+                WriteLine($"você disse {speech}. Confiança {e.Result.Confidence}");
+                switch (e.Result.Grammar.Name)
+                {
+                    case "conversas":
+                        break;
+
+                    case "sistema":
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                Speak("Desculpe, não entendi, pode repetir por favor?");
+            }
+        }
+
+        private static void Speak(string texto)
+        {
+            _sintetizadorDeFala.SpeakAsyncCancelAll();
+            _sintetizadorDeFala.SpeakAsync(texto);
         }
     }
 }
