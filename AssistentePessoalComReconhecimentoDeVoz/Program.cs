@@ -66,6 +66,7 @@ namespace AssistentePessoalComReconhecimentoDeVoz
                 switch (e.Result.Grammar.Name)
                 {
                     case "conversas":
+                        ProcessarConversa(speech);
                         break;
 
                     case "sistema":
@@ -85,6 +86,28 @@ namespace AssistentePessoalComReconhecimentoDeVoz
         {
             _sintetizadorDeFala.SpeakAsyncCancelAll();
             _sintetizadorDeFala.SpeakAsync(texto);
+        }
+
+        private static void ProcessarConversa(string conversa)
+        {
+            switch (conversa)
+            {
+                case "olá":
+                    Speak("Olá, como vai?");
+                    break;
+
+                case "boa noite":
+                    Speak("Boa noite, como vai?");
+                    break;
+                case "boa tarde":
+                    Speak("Boa tarde, como vai?");
+                    break;
+                case "tudo bem":
+                    Speak("Fico feliz em saber disso!");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
